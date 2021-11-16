@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %} Overview for {{rfile}} {% endblock %}
+{% block body %}
+<script>
+    // window.onload = function(){
+    //         document.querySelector("textarea").onclick = function(){
+    //         document.querySelector("textarea").select();
+    //         document.execCommand('copy');
+    //     }
+    // }
+    function copy(cid) {
+        document.getElementById(cid).select();
+        document.execCommand('copy');
+    }
+</script>
+
+        <div class="">
+                         <h1>View Rubric for <span class="badge rounded-pill bg-light text-dark">{{rfile}}</span></h1>
+                         <div>
+                                <table  class="table  table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">People</th>
+                                            <th scope="col">Grade</th>
+                                            <th scope="col">Simple Comments</th>
+                                            <th scope="col">Link</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {%for i in range(0, len)%}
+                                        <tr>
+                                                <td>{{data[i][0]}}</td>
+                                                <td>{{data[i][1]}}</td>
+                                                <td><textarea readonly id="comment-{{i}}" onclick="copy('comment-{{i}}')" readonly class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" title="Clip to Copy" >{{data[i][2]}}</textarea></td>
+    
+                                            <td><a href="{{rfile}}/{{i}}" class="btn btn-outline-dark">Edit</a></td>
+                                        </tr>
+                                    {%endfor%}
+                                    </tbody>
+                                </table>
+                         </div>
+
+       </div>
+
+       
+
+{% endblock %}

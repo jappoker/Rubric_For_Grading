@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %} {{rfile}} - {{person}}  {% endblock %}
+{% block body %}
+        <div class="">
+                         <h1>View Rubric for <span class="badge rounded-pill bg-light text-dark">{{person}} </span> </h1>
+                         <div>
+                            <form method="POST">
+                                <table class="table  table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th width=50px  scope="col">Section</th>
+                                            <th  scope="col">Description</th>
+                                            <th  scope="col">max pts</th>
+                                            <th scope="col"> pts</th>
+                                            <th scope="col"> comment</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {%for i in range(0, len)%}
+                                        <tr>
+                                            {%if data[i][0] == "Comment"%}
+                                            <td>{{data[i][0]}}</td>
+                                                <td colspan="4"><input type="text"name="grade-{{i}}"style="width:50px; display:none" value="{{grades[i]}}"><textarea  class="form-control" type="text"name="comment-{{i}}"value="{{comments[i]}}">{{comments[i]}}</textarea></td>
+                                            {%else%}
+                                                {%for cell in data[i]%}
+                                                    <td>{{cell}}</td>
+                                                {%endfor%}
+                                                {%if data[i][2]|string|length < 2%}
+                                                    <td> <hr> <input type="text"name="grade-{{i}}"style="width:50px; display:none" value="{{grades[i]}}"></td>
+                                                    <td> <hr> <textarea type="text"name="comment-{{i}}"style="display:none" value="{{comments[i]}}"></textarea></td>
+                                                {%else%}  
+                                                    <td><input  class="form-control" type="text"name="grade-{{i}}"style="width:50px" value="{{grades[i]}}"></td>
+                                                    <td><textarea  class="form-control" type="text"name="comment-{{i}}"value="{{comments[i]}}">{{comments[i]}}</textarea></td>
+                                                {%endif%}
+                                            {%endif%}
+                                        </tr>
+                                    {%endfor%}
+                                    </tbody>
+                                </table>
+                                <center>
+                                <button type="sumbmit"  class="btn btn-outline-dark">
+                                    POST
+                                </button>
+                            </center>
+                            </form>
+                         </div>
+       </div>
+{% endblock %}
+

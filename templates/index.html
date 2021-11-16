@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %} Grading List {% endblock %}
+{% block body %}
+        <div class="">
+            <div><h1>List of rubrics</h1></div>
+            <div class="list-group">
+                
+                    {%for i in range(0, len)%}
+                    <a href="/view/{{xlsxs[i]}}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">{{xlsxs[i].split('_')[0] }} Grading</div>
+                            <div class="text-muted">{{xlsxs[i]}}</div>
+                          </div>
+                        
+                        <small class="text-muted">Last modifed  <span class="badge rounded-pill bg-light text-dark">{{status[i]}}</span></small>
+                    </div>
+                </a>
+                    {%endfor%}
+
+            
+            </div>
+       </div>
+{% endblock %}
+
