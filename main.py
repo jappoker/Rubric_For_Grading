@@ -3,7 +3,7 @@ from flask import request, Flask, render_template, url_for, flash, redirect   # 
 import pandas as pd
 import numpy as np
 import os
-import time
+import time,timeago, datetime
 
 app = Flask(__name__)
 rubric_folder = "data"
@@ -12,7 +12,8 @@ rubric_dir = "data/Lab2_21_Rubric.xlsx"
 def read_data(path = rubric_folder):
     xlsxs = [i for i in os.listdir(path) if (".xlsx" in i)and("~$" not in i)]
     xlsxs = sorted(xlsxs, key=lambda t: -os.stat(os.path.join(path, t)).st_mtime)
-    status = [  time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(os.path.getmtime ( os.path.join(path, i) )  ))  for i in xlsxs]
+    date = datetime.datetime.now()
+    status = [ timeago.format(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(os.path.getmtime ( os.path.join(path, i) )  )) ,date) for i in xlsxs]
     return xlsxs,status
 
 def read_rubric(path = rubric_dir):
@@ -72,22 +73,24 @@ def main():
 def view(rfile,pid):
     rubric = read_rubric(os.path.join(rubric_folder, rfile))
     data, len = render_rubric(rubric = rubric)
+    _,num_ppl = render_grading(rubric = rubric)
     grade, person,comments = render_one_grade(pid, rubric = rubric)
 
     if request.method.upper() == "POST":
         inputs = []
         for i in range(len):
-            inputs.append(request.form.get(f"grade-{i}"))
+            inputs.append(request.form.get(f"grade_{i}"))
 
         new_comments = []
         for i in range(len):
-            new_comments.append(request.form.get(f"comment-{i}"))
+            new_comments.append(request.form.get(f"comment_{i}"))
         rubric[person] = inputs 
         rubric[f'{person}-comment'] = new_comments
-        print(rubric)
+        # print(rubric)
         save_rubric(rubric, os.path.join(rubric_folder, rfile))
-        return redirect(url_for("overview",rfile=rfile))
-    return render_template("view.html",data=data,len = len,grades=grade, person=person, comments=comments,rfile=rfile,pid=pid)
+        # return redirect(url_for("overview",rfile=rfile))
+        return redirect(url_for("view",rfile=rfile,pid=pid+1))
+    return render_template("view.html",data=data,len = len,grades=grade, person=person, comments=comments,rfile=rfile,pid=pid,num_ppl=num_ppl)
 
 @app.route("/view/<rfile>")
 def overview(rfile):
